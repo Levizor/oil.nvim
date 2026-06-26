@@ -141,12 +141,14 @@ end
 ---@param winid integer
 ---@param direction "above"|"below"|"left"|"right"|"auto"
 ---@param gap integer
+---@param new_window_fraction number
 ---@return oil.WinLayout root_dim New dimensions of the original window
 ---@return oil.WinLayout new_dim New dimensions of the new window
-M.split_window = function(winid, direction, gap)
+M.split_window = function(winid, direction, gap, new_window_fraction)
   if direction == "auto" then
     direction = vim.o.splitright and "right" or "left"
   end
+  new_window_fraction = new_window_fraction or 0.5
 
   local float_config = vim.api.nvim_win_get_config(winid)
   ---@type oil.WinLayout
@@ -164,11 +166,11 @@ M.split_window = function(winid, direction, gap)
   local dim_new = vim.deepcopy(dim_root)
 
   if direction == "left" or direction == "right" then
-    dim_new.width = math.floor(float_config.width / 2) - math.ceil(gap / 2)
-    dim_root.width = dim_new.width
+    dim_root.width = math.floor((float_config.width - gap) * (1 - new_window_fraction))
+    dim_new.width = float_config.width - gap - dim_root.width
   else
-    dim_new.height = math.floor(float_config.height / 2) - math.ceil(gap / 2)
-    dim_root.height = dim_new.height
+    dim_root.height = math.floor((float_config.height - gap) * (1 -new_window_fraction))
+    dim_new.height = float_config.height - gap - dim_root.height
   end
 
   if direction == "left" then
