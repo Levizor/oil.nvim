@@ -172,13 +172,13 @@ M.split_window = function(winid, direction, gap)
   end
 
   if direction == "left" then
-    dim_root.col = dim_root.col + dim_root.width + gap
+    dim_root.col = dim_root.col + dim_new.width + gap
   elseif direction == "right" then
-    dim_new.col = dim_new.col + dim_new.width + gap
+    dim_new.col = dim_root.col + dim_root.width + gap
   elseif direction == "above" then
-    dim_root.row = dim_root.row + dim_root.height + gap
+    dim_root.row = dim_root.row + dim_new.height + gap
   elseif direction == "below" then
-    dim_new.row = dim_new.row + dim_new.height + gap
+    dim_new.row = dim_root.row + dim_root.height + gap
   end
 
   return dim_root, dim_new
